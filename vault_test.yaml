@@ -7,6 +7,7 @@
     azure.azcollection.azure_rm_keyvault_info:
       resource_group: dhageman
       name: "kv-meshtest"
+      auth_source: msi
     register: keyvault
 
   - name: Print the Key Vault information
