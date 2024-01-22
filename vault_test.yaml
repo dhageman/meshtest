@@ -22,11 +22,11 @@
 
     - name: Set Key Vault url as a fact
       ansible.builtin.set_fact:
-        keyvault_url="{{ keyvault['keyvaults'][0]['vault_uri'] }}"
+        keyvault_url: "{{ keyvault['keyvaults'][0]['vault_uri'] }}"
 
     - name: Use a lookup to get the example secret
       ansible.builtin.set_fact:
-        secret_value="{{ lookup('azure.azcollection.azure_keyvault_secret',
+        secret_value: "{{ lookup('azure.azcollection.azure_keyvault_secret',
                                 'ansible-on-azure-secret-credential', vault_url=keyvault_url) }}"
 
     - name: Output secret retrieved from the Key Vault (NOT RECOMMENDED!)
