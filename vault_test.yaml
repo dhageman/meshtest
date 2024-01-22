@@ -1,5 +1,7 @@
 ---
-- hosts: localhost
+- name: Example of Automation Mesh with Cloud Native Credentials
+
+  hosts: localhost
   connection: local
 
   vars:
@@ -7,23 +9,26 @@
 
   tasks:
 
-  - name: Get Key Vault by name
-    azure.azcollection.azure_rm_keyvault_info:
-      resource_group: dhageman
-      name: "kv-meshtest"
-      auth_source: msi
-    register: keyvault
+    - name: Get Key Vault by Name
+      azure.azcollection.azure_rm_keyvault_info:
+        resource_group: dhageman
+        name: "kv-meshtest"
+        auth_source: msi
+      register: keyvault
 
-  - name: Print the Key Vault information
-    ansible.builtin.debug:
-      var: keyvault
+    - name: Print the Key Vault information
+      ansible.builtin.debug:
+        var: keyvault
 
-  - name: Set key vault URI fact
-    set_fact: keyvault_url="{{ keyvault['keyvaults'][0]['vault_uri'] }}"
+    - name: Set Key Vault url as a fact
+      ansible.builtin.set_fact:
+        keyvault_url="{{ keyvault['keyvaults'][0]['vault_uri'] }}"
 
-  - name: Set key vault secret fact
-    set_fact: secret_value={{ lookup('azure.azcollection.azure_keyvault_secret', 'ansible-on-azure-secret-credential', vault_url=keyvault_url) }}
+    - name: Use a lookup to get the example secret
+      ansible.builtin.set_fact:
+        secret_value="{{ lookup('azure.azcollection.azure_keyvault_secret',
+                                'ansible-on-azure-secret-credential', vault_url=keyvault_url) }}"
 
-  - name: Output key vault secret
-    debug:
-      msg: "{{ secret_value }}"
+    - name: Output secret retrieved from the Key Vault (NOT RECOMMENDED!)
+      ansible.builtin.debug:
+        msg: "{{ secret_value }}"
